@@ -1,7 +1,7 @@
 GPUID=0
-OUTDIR=outputs/permuted_MNIST_incremental_domain_10
+OUTDIR=outputs/permuted_MNIST_incremental_domain_100
 REPEAT=10
-N_PERMUTATION=10
+N_PERMUTATION=100
 mkdir -p $OUTDIR
 IBATCHLEARNPATH=/home/hikmat/Desktop/JWorkspace/CL/Continuum/ContinuumBenchmarks/MNIST/Continual-Learning-Benchmark
 
@@ -17,7 +17,7 @@ BATCH_SIZE=128 #128
 #python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer Adam    --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type regularization --agent_name SI         --lr 0.0001 --reg_coef 10        | tee ${OUTDIR}/SI.log
 #python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer Adam    --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type regularization --agent_name L2         --lr 0.0001 --reg_coef 0.02      | tee ${OUTDIR}/L2.log
 #python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer Adam    --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type customization  --agent_name Naive_Rehearsal_4000   --lr 0.0001          | tee ${OUTDIR}/Naive_Rehearsal_4000.log
-#python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer Adam    --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type customization  --agent_name Naive_Rehearsal_16000  --lr 0.0001          | tee ${OUTDIR}/Naive_Rehearsal_16000.log
-#python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer Adam    --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type regularization --agent_name MAS        --lr 0.0001 --reg_coef 0.1       | tee ${OUTDIR}/MAS.log
+python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer Adam    --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type customization  --agent_name Naive_Rehearsal_16000  --lr 0.0001          | tee ${OUTDIR}/Naive_Rehearsal_16000.log
+python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer Adam    --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type regularization --agent_name MAS        --lr 0.0001 --reg_coef 0.1       | tee ${OUTDIR}/MAS.log
 python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer SGD     --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type customization  --agent_name GEM_4000   --lr 0.1 --reg_coef 0.5          | tee ${OUTDIR}/GEM_4000.log
 python -u ${IBATCHLEARNPATH}/iBatchLearn.py --outdir $OUTDIR --gpuid $GPUID --repeat $REPEAT --optimizer SGD     --n_permutation $N_PERMUTATION --no_class_remap --force_out_dim 10 --schedule $EPOCHS --batch_size $BATCH_SIZE --model_name MLP1000 --agent_type customization  --agent_name GEM_16000  --lr 0.1 --reg_coef 0.5          | tee ${OUTDIR}/GEM_16000.log

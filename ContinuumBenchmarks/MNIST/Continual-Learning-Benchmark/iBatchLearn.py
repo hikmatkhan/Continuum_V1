@@ -98,6 +98,7 @@ def get_args(argv):
     parser.add_argument('--model_name', type=str, default='MLP', help="The name of actual model for the backbone")
     parser.add_argument('--force_out_dim', type=int, default=2, help="Set 0 to let the task decide the required output dimension")
     parser.add_argument('--agent_type', type=str, default='default', help="The type (filename) of agent")
+    parser.add_argument('--outdir', type=str, default='default', help="Output results directory")
     parser.add_argument('--agent_name', type=str, default='NormalNN', help="The class name of agent")
     parser.add_argument('--optimizer', type=str, default='SGD', help="SGD|Adam|RMSprop|amsgrad|Adadelta|Adagrad|Adamax ...")
     parser.add_argument('--dataroot', type=str, default='data', help="The root folder of dataset or downloaded data")
@@ -136,12 +137,13 @@ def get_args(argv):
 
 # CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS = "/home/hikmat/Desktop/GlobXAI/VariationalPrototypeReplaysCL/Continual-Learning-Benchmark/scripts/outputs/"
 # SCENARIO = "split_MNIST_incremental_class"
-CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS  = "{0}/outputs/".format(os.getcwd())
-SCENARIO = "permuted_MNIST_incremental_domain/"
-CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS = "{0}{1}".format(CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS, SCENARIO)
+# CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS  = "{0}/outputs/".format(os.getcwd())
+# SCENARIO = "permuted_MNIST_incremental_domain/"
+# CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS = "{0}{1}".format(CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS, SCENARIO)
 if __name__ == '__main__':
     print(os.getcwd())
     args = get_args(sys.argv[1:])
+    # print("HELLO:", args.outdir)
     reg_coef_list = args.reg_coef
     avg_final_acc = {}
 
@@ -154,11 +156,11 @@ if __name__ == '__main__':
             # Run the experiment
             acc_table, task_names = run(args)
             # print("Run Summary!...")
-            # print("*" * 25)
-            # print("acc_table=", acc_table, " task_names=", task_names)
-            # print("*" * 25)
+            print("*" * 25)
+            print("acc_table=", acc_table, " task_names=", task_names)
+            print("*" * 25)
             # Mengmi: store acc_table in the form of: [val; current task number]
-            path = os.path.join(CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS,
+            path = os.path.join(args.outdir,
                                 '{firstname}_{secondname}-precision_record.pt'.format(firstname=args.agent_name,
                                                                    secondname=(r + 1)))
             torch.save(acc_table, path)
@@ -173,15 +175,20 @@ if __name__ == '__main__':
             # Calculate average performance across tasks
             # Customize this part for a different performance metric
             avg_acc_history = [0] * len(task_names)
+            # task_names = 1-9
+            acc_matrix = torch.zeros(size=(10 ,10))
             for i in range(len(task_names)):
                 train_name = task_names[i]
                 cls_acc_sum = 0
+                print("*" * 50)
                 for j in range(i + 1):
                     val_name = task_names[j]
                     cls_acc_sum += acc_table[val_name][train_name]
+                    print("J", j, " :", acc_table[val_name][train_name])
+                print("*" * 50)
                 avg_acc_history[i] = cls_acc_sum / (i + 1)
                 print('Task', train_name, 'average acc:', avg_acc_history[i])
-            path = os.path.join(CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS,
+            path = os.path.join(args.outdir,
                                 'Avg_{firstname}_{secondname}-precision_record.pt'.format(firstname=args.agent_name,
                                                                                       secondname=(r + 1)))
             # torch.save(avg_acc_history, "{0}{1}".format(CL_PERM_DOMAIN_ICREMENTAL_OUTPUTS,

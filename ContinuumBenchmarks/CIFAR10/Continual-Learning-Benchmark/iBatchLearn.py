@@ -98,6 +98,7 @@ def get_args(argv):
     parser.add_argument('--model_name', type=str, default='MLP', help="The name of actual model for the backbone")
     parser.add_argument('--force_out_dim', type=int, default=2, help="Set 0 to let the task decide the required output dimension")
     parser.add_argument('--agent_type', type=str, default='default', help="The type (filename) of agent")
+    parser.add_argument('--outdir', type=str, default='default', help="Output results directory")
     parser.add_argument('--agent_name', type=str, default='NormalNN', help="The class name of agent")
     parser.add_argument('--optimizer', type=str, default='SGD', help="SGD|Adam|RMSprop|amsgrad|Adadelta|Adagrad|Adamax ...")
     parser.add_argument('--dataroot', type=str, default='data', help="The root folder of dataset or downloaded data")
@@ -139,15 +140,15 @@ def get_args(argv):
 # CL_CIFAR_ICREMENTAL_CLASS_OUTPUTS = "/home/hikmat/Desktop/GlobXAI/VariationalPrototypeReplaysCL/ContinuumBench/CIFAR10/Continual-Learning-Benchmark/scripts/outputs/"
 # SCENARIO = "split_CIFAR10_incremental_class"
 # CL_CIFAR_ICREMENTAL_CLASS_OUTPUTS = "{0}/{1}/".format(CL_CIFAR_ICREMENTAL_CLASS_OUTPUTS, SCENARIO)
-CL_CIFAR_PATH  = "{0}/outputs/".format(os.getcwd())
-SCENARIO = "split_CIFAR10_incremental_class/"
-CL_CIFAR_PATH = "{0}{1}".format(CL_CIFAR_PATH, SCENARIO)
+# CL_CIFAR_PATH  = "{0}/outputs/".format(os.getcwd())
+# SCENARIO = "split_CIFAR10_incremental_class/"
+# CL_CIFAR_PATH = "{0}{1}".format(CL_CIFAR_PATH, SCENARIO)
 if __name__ == '__main__':
     args = get_args(sys.argv[1:])
     reg_coef_list = args.reg_coef
     avg_final_acc = {}
 
-    print(CL_CIFAR_PATH)
+    # print(CL_CIFAR_PATH)
     # The for loops over hyper-paramerters or repeats
     for reg_coef in reg_coef_list:
         args.reg_coef = reg_coef
@@ -161,9 +162,10 @@ if __name__ == '__main__':
             print("acc_table=", acc_table, " task_names=", task_names)
             print("*" * 25)
             # Mengmi: store acc_table in the form of: [val; current task number]
-            path = os.path.join(CL_CIFAR_PATH,
+            path = os.path.join(args.outdir,
                                 '{firstname}_{secondname}-precision_record.pt'.format(firstname=args.agent_name,
                                                                                       secondname=(r + 1)))
+
             torch.save(acc_table, path)
 
             # Calculate average performance across tasks
@@ -177,7 +179,10 @@ if __name__ == '__main__':
                     cls_acc_sum += acc_table[val_name][train_name]
                 avg_acc_history[i] = cls_acc_sum / (i + 1)
                 print('Task', train_name, 'average acc:', avg_acc_history[i])
-            path = os.path.join(CL_CIFAR_PATH,
+            # path = os.path.join(CL_CIFAR_PATH,
+            #                     'Avg_{firstname}_{secondname}-precision_record.pt'.format(firstname=args.agent_name,
+            #                                                                           secondname=(r + 1)))
+            path = os.path.join(args.outdir,
                                 'Avg_{firstname}_{secondname}-precision_record.pt'.format(firstname=args.agent_name,
                                                                                       secondname=(r + 1)))
             torch.save(avg_acc_history, path)
